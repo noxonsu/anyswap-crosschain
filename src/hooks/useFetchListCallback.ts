@@ -211,20 +211,20 @@ export function useFetchMergeTokenListCallback(): () => Promise<any> {
 
     return getUrlData(url)
       .then((tokenList: any) => {
-        const chainTokenList = prepareTokenList(chainId)
-        console.log('>>> useFetchMergeTokenListCallback', tokenList, chainTokenList, jsonTokenList)
-        let list: any = {}
-        if (tokenList.msg === 'Success' && tokenList.data) {
-          list = tokenList.data
-        }
-        if (true) {
-          // @ts-ignore
-          dispatch(mergeTokenList({ chainId: useChainId, tokenList: chainTokenList }))
-          return chainTokenList
-        } else {
-          dispatch(mergeTokenList({ chainId: useChainId, tokenList: list }))
-          return list
-        }
+        // const chainTokenList = prepareTokenList(chainId)
+        const list = tokenList.msg === 'Success' && tokenList.data ? tokenList.data : {}
+
+        dispatch(mergeTokenList({ chainId: useChainId, tokenList: list }))
+        return list
+
+        // if (true) {
+        //   // @ts-ignore
+        //   dispatch(mergeTokenList({ chainId: useChainId, tokenList: chainTokenList }))
+        //   return chainTokenList
+        // } else {
+        //   dispatch(mergeTokenList({ chainId: useChainId, tokenList: list }))
+        //   return list
+        // }
       })
       .catch(error => {
         console.debug(`Failed to get list at url `, error)

@@ -2,7 +2,12 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useFetchListCallback, useFetchTokenListCallback, useFetchTokenList1Callback, useFetchMergeTokenListCallback } from '../../hooks/useFetchListCallback'
+import {
+  useFetchListCallback,
+  // useFetchTokenListCallback,
+  // useFetchTokenList1Callback,
+  useFetchMergeTokenListCallback
+} from '../../hooks/useFetchListCallback'
 // import { useFetchListCallback, useFetchTokenListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
@@ -22,34 +27,32 @@ export default function Updater(): null {
   const isWindowVisible = useIsWindowVisible()
 
   const fetchList = useFetchListCallback()
-  const fetchTokenList = useFetchTokenListCallback()
-  const fetchTokenList1 = useFetchTokenList1Callback()
+  // const fetchTokenList = useFetchTokenListCallback()
+  // const fetchTokenList1 = useFetchTokenList1Callback()
+  // main
   const fetchMergeTokenList = useFetchMergeTokenListCallback()
 
-  // console.log(fetchTokenList)
-  // console.log(lists)
-
   const fetchAllListsCallback = useCallback(() => {
-    if (!isWindowVisible) return
+    if (!isWindowVisible || !lists.length) return
 
-    Object.keys(lists).forEach((url) => {
+    Object.keys(lists).forEach(url => {
       if (url) {
         fetchList(url).catch(error => console.debug('interval list fetching error', error))
       }
     })
   }, [fetchList, isWindowVisible, lists])
 
-  const fetchAllTokenListsCallback = useCallback(() => {
-    if (chainId) {
-      fetchTokenList().catch(error => console.debug('interval list fetching error', error))
-    }
-  }, [fetchTokenList, chainId, apiAddress])
+  // const fetchAllTokenListsCallback = useCallback(() => {
+  //   if (chainId) {
+  //     fetchTokenList().catch(error => console.debug('interval list fetching error', error))
+  //   }
+  // }, [fetchTokenList, chainId, apiAddress])
 
-  const fetchAllTokenLists1Callback = useCallback(() => {
-    if (chainId) {
-      fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
-    }
-  }, [fetchTokenList1, chainId, apiAddress])
+  // const fetchAllTokenLists1Callback = useCallback(() => {
+  //   if (chainId) {
+  //     fetchTokenList1().catch(error => console.debug('interval list fetching error', error))
+  //   }
+  // }, [fetchTokenList1, chainId, apiAddress])
 
   const fetchMergeTokenListsCallback = useCallback(() => {
     if (chainId) {
@@ -62,8 +65,8 @@ export default function Updater(): null {
   const interval = library ? TEN_MINUTES : null
 
   useInterval(fetchAllListsCallback, interval)
-  useInterval(fetchAllTokenListsCallback, interval)
-  useInterval(fetchAllTokenLists1Callback, interval)
+  // useInterval(fetchAllTokenListsCallback, interval)
+  // useInterval(fetchAllTokenLists1Callback, interval)
   useInterval(fetchMergeTokenListsCallback, interval)
 
   // whenever a list is not loaded and not loading, try again to load it
@@ -76,13 +79,13 @@ export default function Updater(): null {
     })
   }, [dispatch, fetchList, library, lists])
 
-  useEffect(() => {
-    fetchAllTokenListsCallback()
-  }, [dispatch, fetchTokenList, chainId, apiAddress])
+  // useEffect(() => {
+  //   fetchAllTokenListsCallback()
+  // }, [dispatch, fetchTokenList, chainId, apiAddress])
 
-  useEffect(() => {
-    fetchAllTokenLists1Callback()
-  }, [dispatch, fetchTokenList1, chainId, apiAddress])
+  // useEffect(() => {
+  //   fetchAllTokenLists1Callback()
+  // }, [dispatch, fetchTokenList1, chainId, apiAddress])
 
   useEffect(() => {
     fetchMergeTokenListsCallback()

@@ -139,13 +139,12 @@ export function listsToTokenMap(list:any): TokenAddressMap {
 }
 
 export function listsMergeToTokenMap(list:any): TokenAddressMap {
-
-  // console.log(list)
   const map:any = {}
+
   for (const t in list) {
-    // if(!isAddress(t)) continue
     map[t] = new WrappedBridgeTokenInfo(list[t])
   }
+
   return map
 }
 
@@ -245,17 +244,18 @@ export function useMergeBridgeTokenList(chainId?:any): any {
   }, [lists, chainId])
 }
 
-export function useAllMergeBridgeTokenList(key?: string | undefined, chainId?:any): any {
-  const lists:any = useSelector<AppState, AppState['lists']>(state => state.lists)
-  // console.log(lists)
+export function useAllMergeBridgeTokenList(key?: string, chainId?: any): any {
+  const lists: any = useSelector<AppState, AppState['lists']>(state => state.lists)
   const init = {}
+
   return useMemo(() => {
     if (!key || !chainId) return init
+
     const current = lists[key]?.[chainId]?.tokenList
-    // console.log(current)
+
     if (!current) return init
+
     try {
-      // return listsMergeToTokenMap(current)
       return current
     } catch (error) {
       console.error('Could not show token list due to error', error)

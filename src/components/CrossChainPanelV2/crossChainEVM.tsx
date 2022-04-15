@@ -29,14 +29,11 @@ import { tryParseAmount } from '../../state/swap/hooks'
 // import { useMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useAllMergeBridgeTokenList } from '../../state/lists/hooks'
 import { useUserSelectChainId } from '../../state/user/hooks'
-
+import { BRIDGE_KEY } from '../../config/constant'
 import config from '../../config'
 import {getParams} from '../../config/tools/getUrlParams'
 import {selectNetwork} from '../../config/tools/methods'
-
 import {getNodeTotalsupply} from '../../utils/bridge/getBalanceV2'
-// import {formatDecimal, thousandBit} from '../../utils/tools/tools'
-
 import TokenLogo from '../TokenLogo'
 import LiquidityPool from '../LiquidityPool'
 
@@ -57,11 +54,7 @@ import {
 
 let intervalFN:any = ''
 
-export default function CrossChain({
-  bridgeKey
-}: {
-  bridgeKey: any
-}) {
+export default function CrossChain({ bridgeKey }: { bridgeKey: BRIDGE_KEY }) {
   // const { account, chainId, library } = useActiveWeb3React()
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -114,10 +107,7 @@ export default function CrossChain({
   initBridgeToken = initBridgeToken ? initBridgeToken.toLowerCase() : ''
 
   const destConfig = useMemo(() => {
-    if (selectDestCurrency) {
-      return selectDestCurrency
-    }
-    return false
+    return selectDestCurrency || false
   }, [selectDestCurrency])
 
   const isRouter = useMemo(() => {
@@ -128,21 +118,14 @@ export default function CrossChain({
   }, [destConfig])
 
   const useDestAddress = useMemo(() => {
-    if (isRouter) {
-      return destConfig?.routerToken
-    }
-    return destConfig?.DepositAddress
+    return isRouter ? destConfig?.routerToken : destConfig?.DepositAddress
   }, [destConfig, isRouter])
 
   const isNativeToken = useMemo(() => {
-    // console.log(selectCurrency)
     if (
-      selectCurrency
-      && selectCurrency.address
+      selectCurrency?.address
       && useChainId
-      && config.getCurChainInfo(useChainId)
-      && config.getCurChainInfo(useChainId).nativeToken
-      && config.getCurChainInfo(useChainId).nativeToken.toLowerCase() === selectCurrency.address.toLowerCase()
+      && config.getCurChainInfo(useChainId)?.nativeToken?.toLowerCase() === selectCurrency.address.toLowerCase()
     ) {
       return true
     }
@@ -150,30 +133,24 @@ export default function CrossChain({
   }, [selectCurrency, useChainId])
 
   const isUnderlying = useMemo(() => {
-    if (selectCurrency && selectCurrency?.underlying) {
-      return true
-    }
-    return false
+    return !!(selectCurrency && selectCurrency?.underlying)
   }, [selectCurrency])
 
   const isDestUnderlying = useMemo(() => {
-    // console.log(destConfig)
-    // console.log(destConfig?.underlying)
-    if (destConfig?.underlying) {
-      return true
-    }
-    return false
+    return !!destConfig?.underlying
   }, [destConfig])
-  // console.log(isDestUnderlying)
 
   const formatCurrency0 = useLocalToken(
-  selectCurrency?.underlying ? {
-    ...selectCurrency,
-    address: selectCurrency.underlying.address,
-    name: selectCurrency.underlying.name,
-    symbol: selectCurrency.underlying?.symbol,
-    decimals: selectCurrency.underlying.decimals
-  } : selectCurrency)
+    selectCurrency?.underlying
+      ? {
+          ...selectCurrency,
+          address: selectCurrency.underlying.address,
+          name: selectCurrency.underlying.name,
+          symbol: selectCurrency.underlying?.symbol,
+          decimals: selectCurrency.underlying.decimals
+        }
+      : selectCurrency
+  )
   const formatCurrency = useLocalToken(selectNetworkInfo?.chainId ? undefined : selectCurrency)
   const formatInputBridgeValue = tryParseAmount(inputBridgeValue, formatCurrency ?? undefined)
   const [approval, approveCallback] = useApproveCallback(formatInputBridgeValue ?? undefined, isRouter ? useDestAddress : formatCurrency0?.address)
