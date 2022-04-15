@@ -277,7 +277,7 @@ export const controlConfig: any = {
     isOpenNFT: 1
   },
   [VERSION.V7]: {
-    bridgeInitDataChain: '56',
+    bridgeInitDataChain: '56', // No use
     hiddenCoin: formatHiddenCoin([]),
     hiddenChain: [],
     showCoin: [],

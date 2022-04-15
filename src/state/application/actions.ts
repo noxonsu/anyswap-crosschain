@@ -46,6 +46,7 @@ export type AppData = {
   routerConfigAddress: string
 }
 
+export const updateActiveNetworks = createAction<{ networks: number[] }>('application/updateActiveNetworks')
 export const updateRouterData = createAction<{ chainId: number; routerAddress: string }>('application/updateRouterData')
 export const setAppManagement = createAction<{ status: boolean }>('application/setAppManagement')
 export const retrieveAppData = createAction<null | AppData>('application/retrieveAppData')

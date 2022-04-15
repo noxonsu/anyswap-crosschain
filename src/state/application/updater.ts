@@ -4,14 +4,15 @@ import { ZERO_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouterConfigContract } from '../../hooks/useContract'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
-import { updateBlockNumber, updateRouterData } from './actions'
+import { getUrlData } from '../../utils/tools/axios'
+import { updateBlockNumber, updateRouterData, updateActiveNetworks } from './actions'
 import { useAppState } from './hooks'
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
   const dispatch = useDispatch()
   const windowVisible = useIsWindowVisible()
-  const { routerConfigAddress, routerConfigChainId } = useAppState()
+  const { apiAddress, routerConfigAddress, routerConfigChainId } = useAppState()
   const routerConfig = useRouterConfigContract(routerConfigAddress, routerConfigChainId || 0)
 
   const blockNumberCallback = useCallback(
@@ -24,6 +25,27 @@ export default function Updater(): null {
   )
 
   // attach/detach listeners
+
+  useEffect(() => {
+    const update = async () => {
+      let networks: number[] = []
+
+      try {
+        const response: any = await getUrlData(`http://${apiAddress}/allchainids`)
+
+        if (response?.msg === 'Success' && response?.data) {
+          networks = response?.data
+        }
+      } catch (error) {
+        console.error('Fetch active router networks: ', error)
+      }
+
+      dispatch(updateActiveNetworks({ networks }))
+    }
+
+    if (apiAddress) update()
+  }, [apiAddress])
+
   useEffect(() => {
     if (!library || !chainId || !windowVisible) return
 

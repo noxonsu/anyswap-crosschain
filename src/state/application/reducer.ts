@@ -9,6 +9,7 @@ import {
   setOpenModal,
   retrieveAppData,
   setAppManagement,
+  updateActiveNetworks,
   updateRouterData,
   AppData
 } from './actions'
@@ -16,6 +17,7 @@ import {
 type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>
 
 export type ApplicationState = {
+  readonly activeNetworks: number[]
   readonly appManagement: boolean
   readonly routerAddress: { readonly [chainId: number]: string }
   readonly blockNumber: { readonly [chainId: number]: number }
@@ -27,6 +29,7 @@ const initialState: ApplicationState = {
   apiAddress: '',
   routerConfigChainId: undefined,
   routerConfigAddress: '',
+  activeNetworks: [],
   appManagement: false,
   owner: '',
   logo: '',
@@ -76,6 +79,11 @@ export default createReducer(initialState, builder =>
         if (Array.isArray(socialLinks) && socialLinks.length) state.socialLinks = socialLinks
         if (disableSourceCopyright) state.disableSourceCopyright = disableSourceCopyright
       }
+    })
+    .addCase(updateActiveNetworks, (state, action) => {
+      const { networks } = action.payload
+
+      state.activeNetworks = networks
     })
     .addCase(updateRouterData, (state, action) => {
       const { chainId, routerAddress } = action.payload
