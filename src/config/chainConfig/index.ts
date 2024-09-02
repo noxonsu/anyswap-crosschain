@@ -45,7 +45,7 @@ import linea, {LINEA_MAIN_CHAINID} from './linea'
 
 import xzo, {XZO_MAIN_CHAINID} from './xzo'
 
-
+import vector, {VECTOR_MAIN_CHAINID} from './vector'
 
 import {VERSION, USE_VERSION, env} from '../constant'
 
@@ -97,7 +97,8 @@ export const chainInfo:ConFig = {
 
   ...base,
   ...linea,
-  ...xzo
+  ...xzo,
+  ...vector,
 }
 
 const allChainList = [
@@ -141,7 +142,8 @@ const allChainList = [
   OZO_MAIN_CHAINID,
   BASE_MAIN_CHAINID,
   LINEA_MAIN_CHAINID,
-  XZO_MAIN_CHAINID
+  XZO_MAIN_CHAINID,
+  VECTOR_MAIN_CHAINID,
 ]
 
 const useChain:any = {
@@ -216,7 +218,8 @@ const useChain:any = {
     XDAI_MAIN_CHAINID,
     KCC_MAIN_CHAINID,
     OKT_MAIN_CHAINID,
-    ONE_MAIN_CHAINID
+    ONE_MAIN_CHAINID,
+    VECTOR_MAIN_CHAINID,
   ],
   [VERSION.V4_OKT]: [
     BNB_MAIN_CHAINID,
@@ -295,6 +298,7 @@ const useChain:any = {
     BASE_MAIN_CHAINID,
     LINEA_MAIN_CHAINID,
     XZO_MAIN_CHAINID,
+    VECTOR_MAIN_CHAINID,
   ]
 }
 
